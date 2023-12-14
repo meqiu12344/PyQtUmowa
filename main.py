@@ -46,22 +46,26 @@ class MyForm(QDialog):
             msg_pesel_box.setText("Pesel lub nr. tel został wypełniony nieprawidłowo.")
             msg_pesel_box.exec()
 
-            return 0
+            return False
+
 
     def Save_to_comboBox(self):
-        user_data = self.get_user_data()
-        name = user_data['name']
-        last_name = user_data['last_name']
+        if not self.get_user_data() == False:
+            user_data = self.get_user_data()
+            name = user_data['name']
+            last_name = user_data['last_name']
 
-        self.ui.comboBox.addItem(name + " " + last_name)
+            self.ui.comboBox.addItem(name + " " + last_name)
 
     def Save_to_file(self):
-        user_data = self.get_user_data()
-        name = user_data['name']
-        last_name = user_data['last_name']
+        if not self.get_user_data() == False:
+            user_data = self.get_user_data()
+            name = user_data['name']
+            last_name = user_data['last_name']
+            file_name = name + "_" + last_name + '.txt'
 
-        with open('imie_nazwisko.txt', 'a') as file:
-            file.write(name + " " + last_name + '\n')
+            with open("users/" + file_name, 'a') as file:
+                file.write(name + " " + last_name + '\n')
 
 
 if __name__ == "__main__":
