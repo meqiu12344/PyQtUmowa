@@ -10,7 +10,8 @@ class MyForm(QDialog):
         super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
-        self.ui.save.clicked.connect(self.get_user_data)
+        self.ui.save.clicked.connect(self.Save_to_comboBox)
+        self.ui.saveToFile.clicked.connect(self.Save_to_file)
 
     def get_user_data(self):
         name = self.ui.name.text()
@@ -38,23 +39,29 @@ class MyForm(QDialog):
             else:
                 return True
 
-        if check_pesel(PESEL):
-            self.ui.comboBox.addItem(name + " " + last_name)
-            with open('imie_nazwisko.txt', 'a') as file:
-                file.write(name + " " + last_name + '\n')
+        if check_pesel(PESEL) and tel.isnumeric():
+            return {'name': name, 'last_name': last_name, 'pesel': PESEL, 'tel': tel}
         else:
             msg_pesel_box = QMessageBox()
-            msg_pesel_box.setText("Pesel został wypełniony nieprawidłowo.")
-            msg_pesel_box.exec()
-
-        if not tel.isnumeric():
-            msg_pesel_box = QMessageBox()
-            msg_pesel_box.setText("Nr telefonu został wypełniony nieprawidłowo.")
+            msg_pesel_box.setText("Pesel lub nr. tel został wypełniony nieprawidłowo.")
             msg_pesel_box.exec()
 
             return 0
 
-        return {'name': name, 'last_name': last_name, 'pesel': PESEL, 'tel': tel}
+    def Save_to_comboBox(self):
+        user_data = self.get_user_data()
+        name = user_data['name']
+        last_name = user_data['last_name']
+
+        self.ui.comboBox.addItem(name + " " + last_name)
+
+    def Save_to_file(self):
+        user_data = self.get_user_data()
+        name = user_data['name']
+        last_name = user_data['last_name']
+
+        with open('imie_nazwisko.txt', 'a') as file:
+            file.write(name + " " + last_name + '\n')
 
 
 if __name__ == "__main__":
